@@ -11,6 +11,9 @@ public class EmailUtil {
 
     private final JavaMailSender mailSender;
 
+    @Value("${spring.mail.username}")
+    private String senderEmail;
+
     @Autowired
     public EmailUtil(JavaMailSender mailSender){
         this.mailSender = mailSender;
@@ -21,7 +24,7 @@ public class EmailUtil {
         message.setTo(to);
         message.setSubject(subject);
         message.setText(text);
-        message.setFrom("ashishv1437@gmail.com");
+        message.setFrom(senderEmail);
         mailSender.send(message);
     }
 }

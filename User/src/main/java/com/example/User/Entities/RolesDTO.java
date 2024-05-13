@@ -1,12 +1,8 @@
 package com.example.User.Entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "roles")
@@ -15,8 +11,9 @@ public class RolesDTO {
 
     @Id
     @Column(name = "role_id")
-    long id;
+    private long id;
 
-    @Column(name = "role_name")
-    String roleName;
+    @NotNull(message = "RoleName can't be null")
+    @Column(name = "role_name", unique = true, nullable = false)
+    private String roleName;
 }

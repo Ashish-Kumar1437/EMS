@@ -1,5 +1,6 @@
 package com.example.User.Entities;
 
+import com.example.User.Enums.GenderEnum;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -7,6 +8,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+
+import java.util.Date;
 
 @Entity
 @Data
@@ -30,6 +33,25 @@ public class UserDTO {
     @Size(min = 8, message = "Password must be at least 8 characters long")
     String password;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    ProfileDTO profile;
+    @Column
+    String name;
+
+    @Column(name = "phone_no")
+    int phoneNo;
+
+    @Column
+    String DOB;
+
+    @Enumerated(EnumType.STRING)
+    GenderEnum gender;
+
+    @Column
+    boolean status = true;
+
+    @ManyToOne
+    @JoinColumn(name = "role_id")
+    RolesDTO role;
+
+    @Column
+    String deactivationDate;
 }
