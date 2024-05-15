@@ -3,6 +3,7 @@ import com.example.User.Services.MyUserDetailsService;
 import com.example.User.Utils.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.aspectj.weaver.patterns.IToken;
@@ -29,11 +30,10 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String authHeader = request.getHeader(AUTH_KEY);
-        String token = null;
+
+        String token = jwtService.extractToken(request);
         String username = null;
-        if (authHeader != null) {
-            token = authHeader;
+        if(token != null){
             username = jwtService.extractUsername(token);
         }
 

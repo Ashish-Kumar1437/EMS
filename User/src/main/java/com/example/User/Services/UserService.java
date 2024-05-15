@@ -10,6 +10,7 @@ import com.example.User.Utils.AuditUtil;
 import com.example.User.Utils.EmailUtil;
 import com.example.User.Utils.JwtUtil;
 import com.example.User.Utils.ObjectComparatorUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -133,7 +134,11 @@ public class UserService {
         return jwtUtil.generateToken(auth.getName());
     }
 
-    public UserDTO getUserByToken(String token) throws Exception {
+    public UserDTO getUserByToken(HttpServletRequest request) throws Exception {
+        String token = jwtUtil.extractToken(request);
+        if(token == null) {
+            throw new Exception("Invalid Request");
+        }
         String userName = jwtUtil.extractUsername(token);
         return fetchUser(userName);
     }

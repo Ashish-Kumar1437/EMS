@@ -15,7 +15,7 @@ public class AuditByInterceptor implements HandlerInterceptor {
     JwtUtil jwtUtil;
 
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        String token = request.getHeader("Auth-token");
+        String token = jwtUtil.extractToken(request);
         if(token != null)
             AuditUtil.actionBy = jwtUtil.extractUsername(token);
         return true;

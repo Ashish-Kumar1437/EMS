@@ -6,6 +6,7 @@ import com.example.User.Entities.CreateUserDO;
 import com.example.User.Services.UserService;
 import jakarta.persistence.PersistenceException;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -74,8 +75,8 @@ public class UserController {
     }
 
     @GetMapping("/bytoken")
-    public UserDTO getUserBYToken(@RequestHeader("Auth-token") String token) throws Exception {
-        return userService.getUserByToken(token);
+    public UserDTO getUserBYToken(HttpServletRequest request) throws Exception {
+        return userService.getUserByToken(request);
     }
 
 }
