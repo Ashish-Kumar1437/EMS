@@ -1,15 +1,12 @@
-package com.example.User.Entities;
+package com.example.User.Models;
 
 import com.example.User.Enums.GenderEnum;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
-
-import java.util.Date;
 
 @Entity
 @Data
@@ -48,10 +45,19 @@ public class UserDTO {
     @Column
     boolean status = true;
 
-    @ManyToOne
-    @JoinColumn(name = "role_id")
-    RolesDTO role;
 
     @Column
     String deactivationDate;
+
+    @Column
+    String address;
+
+    @Column
+    String city;
+
+    @Column
+    String state;
+
+    @Column
+    Long pincode;
 }

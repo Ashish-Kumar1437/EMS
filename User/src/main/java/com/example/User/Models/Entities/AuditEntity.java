@@ -1,10 +1,8 @@
-package com.example.User.Entities;
+package com.example.User.Models;
 
 import com.example.User.Enums.AuditType;
 import jakarta.persistence.*;
 import lombok.Data;
-
-import java.time.LocalDate;
 
 @Data
 @Entity

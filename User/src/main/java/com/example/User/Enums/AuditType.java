@@ -1,5 +1,5 @@
 package com.example.User.Enums;
 
-public enum AuditType {
+public enum AuditTypeEnum {
     USER,ROLE;
 }

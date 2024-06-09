@@ -1,4 +1,4 @@
-package com.example.User.Entities;
+package com.example.User.Models;
 
 import lombok.Data;
 
