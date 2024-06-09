@@ -1,6 +1,6 @@
 package com.example.User.Services;
 
-import com.example.User.Entities.UserDTO;
+import com.example.User.Models.Entities.UserEntity;
 import com.example.User.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
@@ -20,7 +20,7 @@ public class MyUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserDTO user = Optional.ofNullable(userRepository.findByUserName(username)).orElseThrow(() -> new UsernameNotFoundException("User doesn't exists"));
+        UserEntity user = Optional.ofNullable(userRepository.findByUserName(username)).orElseThrow(() -> new UsernameNotFoundException("User doesn't exists"));
         return new User(user.getUserName(),user.getPassword(),new ArrayList<>());
     }
 

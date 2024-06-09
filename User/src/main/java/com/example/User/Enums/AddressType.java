@@ -1,5 +1,5 @@
 package com.example.User.Enums;
 
-public enum AddressTypeEnum {
+public enum AddressType {
     HOME,OFFICE,OTHER;
 }

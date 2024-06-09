@@ -1,8 +1,8 @@
 package com.example.User.Controllers;
 
-import com.example.User.Entities.LoginRequestDO;
-import com.example.User.Entities.UserDTO;
-import com.example.User.Entities.CreateUserDO;
+import com.example.User.Models.DTO.LoginRequestDTO;
+import com.example.User.Models.Entities.UserEntity;
+import com.example.User.Models.DTO.CreateUserDTO;
 import com.example.User.Services.UserService;
 import jakarta.persistence.PersistenceException;
 import jakarta.servlet.http.Cookie;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/user")
-@CrossOrigin(originPatterns = "*",allowCredentials = "true")
+@CrossOrigin(originPatterns = "*")
 public class UserController {
 
     @Autowired
@@ -24,7 +24,7 @@ public class UserController {
 
     //Create User
     @PostMapping(value = "/create")
-    public ResponseEntity<?> createUser(@RequestBody CreateUserDO user) {
+    public ResponseEntity<?> createUser(@RequestBody CreateUserDTO user) {
         try {
             return ResponseEntity.ok(userService.createUser(user));
         } catch (DataIntegrityViolationException e) {
@@ -39,13 +39,13 @@ public class UserController {
 
     //update User -> deactivate/Activate User
     @PostMapping("/update")
-    private UserDTO updateUser(@RequestBody UserDTO user, @RequestParam boolean isActivate, @RequestParam boolean isDeactivate) throws Exception {
+    private UserEntity updateUser(@RequestBody UserEntity user, @RequestParam boolean isActivate, @RequestParam boolean isDeactivate) throws Exception {
         return userService.updateUser(user, isActivate, isDeactivate);
     }
 
     //Fetch User
     @GetMapping("")
-    public UserDTO fetchUser(@RequestParam String userName) throws Exception {
+    public UserEntity fetchUser(@RequestParam String userName) throws Exception {
         return userService.fetchUser(userName);
     }
 
@@ -63,7 +63,7 @@ public class UserController {
 
     //Login
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequestDO request, HttpServletResponse response){
+    public ResponseEntity<?> login(@RequestBody LoginRequestDTO request, HttpServletResponse response){
         String token = userService.login(request);
 
         Cookie cookie = new Cookie("Auth-token", token);
@@ -75,8 +75,18 @@ public class UserController {
     }
 
     @GetMapping("/bytoken")
-    public UserDTO getUserBYToken(HttpServletRequest request) throws Exception {
+    public UserEntity getUserBYToken(HttpServletRequest request) throws Exception {
         return userService.getUserByToken(request);
+    }
+
+    @GetMapping("/email-exits")
+    public boolean doesEmailExits(@RequestParam String email){
+        return userService.doesEmailExits(email);
+    }
+
+    @GetMapping("/username-exits")
+    public boolean doesUserNameExits(@RequestParam String username){
+        return userService.doesUserName(username);
     }
 
 }

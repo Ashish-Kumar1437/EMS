@@ -1,4 +1,4 @@
-package com.example.User.Models;
+package com.example.User.Models.Entities;
 
 import com.example.User.Enums.AuditType;
 import jakarta.persistence.*;
@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name = "audit")
-public class AuditDTO {
+public class AuditEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

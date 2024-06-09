@@ -1,9 +1,8 @@
 package com.example.User.Services;
 
-import com.example.User.Constants.Roles;
-import com.example.User.Entities.LoginRequestDO;
-import com.example.User.Entities.UserDTO;
-import com.example.User.Entities.CreateUserDO;
+import com.example.User.Models.DTO.LoginRequestDTO;
+import com.example.User.Models.Entities.UserEntity;
+import com.example.User.Models.DTO.CreateUserDTO;
 import com.example.User.Enums.AuditType;
 import com.example.User.Repository.UserRepository;
 import com.example.User.Utils.AuditUtil;
@@ -33,9 +32,9 @@ public class UserService {
     private EmailUtil emailUtil;
     private AuditUtil auditUtil;
 
-    public UserDTO createUser(CreateUserDO user) {
+    public UserEntity createUser(CreateUserDTO user) {
         String hashPassword = passwordEncoder.encode(user.getPassword());
-        UserDTO profile = new UserDTO();
+        UserEntity profile = new UserEntity();
         profile.setPassword(hashPassword);
         profile.setUserName(user.getUserName());
         profile.setEmail(user.getEmail());
@@ -47,7 +46,7 @@ public class UserService {
 
     public String resetPassord(String oldPassword, String newPassword, long userId) throws Exception {
         try {
-            UserDTO user = userRepository.findById(userId).orElseThrow(() -> new Exception("User not found"));
+            UserEntity user = userRepository.findById(userId).orElseThrow(() -> new Exception("User not found"));
             if (passwordEncoder.matches(oldPassword, user.getPassword())) {
                 user.setPassword(passwordEncoder.encode(newPassword));
                 userRepository.save(user);
@@ -62,14 +61,14 @@ public class UserService {
         return "Password Changed Successfully";
     }
 
-    public UserDTO fetchUser(String userName) throws Exception {
-        UserDTO user = Optional.ofNullable(userRepository.findByUserName(userName)).orElseThrow(() -> new Exception("User not present"));
+    public UserEntity fetchUser(String userName) throws Exception {
+        UserEntity user = Optional.ofNullable(userRepository.findByUserName(userName)).orElseThrow(() -> new Exception("User not present"));
         user.setPassword(null);
         return user;
     }
 
-    public UserDTO updateUser(UserDTO newUser, boolean isActivate, boolean isDeactivate) throws Exception {
-        UserDTO oldUser = userRepository.findById(newUser.getID()).orElseThrow(() -> new Exception("User not present"));
+    public UserEntity updateUser(UserEntity newUser, boolean isActivate, boolean isDeactivate) throws Exception {
+        UserEntity oldUser = userRepository.findById(newUser.getID()).orElseThrow(() -> new Exception("User not present"));
 
         if (!oldUser.isStatus() && !isActivate) {
             throw new Exception("Deactivated User can't be modified");
@@ -87,20 +86,16 @@ public class UserService {
         return userRepository.save(newUser);
     }
 
-    private void activateUserIfNeeded(UserDTO newUser, boolean isActivate) {
+    private void activateUserIfNeeded(UserEntity newUser, boolean isActivate) {
         if (isActivate) {
             newUser.setStatus(true);
             newUser.setDeactivationDate(null);
         }
     }
 
-    private void deactivateUserIfNeeded(UserDTO newUser, boolean isDeactivate, UserDTO oldUser) throws Exception {
+    private void deactivateUserIfNeeded(UserEntity newUser, boolean isDeactivate, UserEntity oldUser) throws Exception {
         if (!isDeactivate || newUser.getDeactivationDate() == null) {
             return;
-        }
-
-        if (oldUser.getRole() != null && oldUser.getRole().getId() == Roles.ADMIN) {
-            throw new Exception("Admin user can't be deactivated");
         }
 
         if (isDeactivationDateToday(newUser.getDeactivationDate())) {
@@ -118,12 +113,12 @@ public class UserService {
     }
 
     public String forgotPassword(String email) throws Exception {
-        UserDTO user = Optional.ofNullable(userRepository.findByEmail(email)).orElseThrow(() -> new Exception("No User present with this email"));
+        UserEntity user = Optional.ofNullable(userRepository.findByEmail(email)).orElseThrow(() -> new Exception("No User present with this email"));
         //emailUtil.sendMail(user.getEmail(), "Reset Password", "Reset Password");
         return "Email Sent";
     }
 
-    public String login(LoginRequestDO request) {
+    public String login(LoginRequestDTO request) {
         UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(request.getUserName(), request.getPassword());
         try {
             manager.authenticate(auth);
@@ -134,12 +129,20 @@ public class UserService {
         return jwtUtil.generateToken(auth.getName());
     }
 
-    public UserDTO getUserByToken(HttpServletRequest request) throws Exception {
+    public UserEntity getUserByToken(HttpServletRequest request) throws Exception {
         String token = jwtUtil.extractToken(request);
         if(token == null) {
             throw new Exception("Invalid Request");
         }
         String userName = jwtUtil.extractUsername(token);
         return fetchUser(userName);
+    }
+
+    public boolean doesEmailExits(String email){
+    return userRepository.existsByEmail(email);
+    }
+
+    public boolean doesUserName(String userName){
+        return userRepository.existsByUserName(userName);
     }
 }

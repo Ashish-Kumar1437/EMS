@@ -1,9 +1,9 @@
-package com.example.User.Models;
+package com.example.User.Models.DTO;
 
 import lombok.Data;
 
 @Data
-public class LoginRequestDO {
+public class LoginRequestDTO {
 
     String userName;
     String password;

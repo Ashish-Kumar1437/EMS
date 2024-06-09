@@ -54,24 +54,13 @@ public class SecurityConfigurer {
                 .authorizeRequests()
                 .requestMatchers(SWAGGER_WHITELIST).permitAll()
                 .requestMatchers("/user/login", "/user/create").permitAll().
-                requestMatchers("/user/**", "/role/**").authenticated()
+                requestMatchers("/user/**","/address/**").authenticated()
                 .anyRequest()
                 .authenticated()
                 .and()
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
-    }
-
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.addAllowedOrigin("*"); // Allow all origins
-        configuration.addAllowedMethod("*"); // Allow all HTTP methods
-        configuration.addAllowedHeader("*"); // Allow all headers
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
     }
 
     @Bean

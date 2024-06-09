@@ -1,9 +1,9 @@
-package com.example.User.Models;
+package com.example.User.Models.DTO;
 
 import lombok.Data;
 
 @Data
-public class CreateUserDO {
+public class CreateUserDTO {
 
     String userName;
     String email;
